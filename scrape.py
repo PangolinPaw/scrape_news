@@ -6,32 +6,34 @@ import json
 import time
 import datetime
 
-HISTROY_FILE = f'{os.path.realpath(__file__)}{os.sep}history.json'
+THIS_DIR = f'{os.path.split(os.path.abspath(__file__))[0]}{os.sep}'
 
 def in_history(url):
+	history_file = f'{THIS_DIR}history.json'
 	today = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-	if os.path.exists(HISTROY_FILE):
-		history = f.read()
-		json.loads(history)
+	if os.path.exists(history_file):
+		with open(history_file, 'r') as f:
+			history = f.read()
+			history = json.loads(history)
 		if url in history:
 			return True
 		else:
-			with open(HISTROY_FILE, 'w') as f:
+			with open(history_file, 'w') as f:
 				history[url] = today
-				history = json.dumps(history)
+				history = json.dumps(history, indent=4)
 				f.write(history)
 			return False
 		
 	else:
-		with open(HISTROY_FILE, 'w') as f:
-			history = json.dumps({url: today})
+		with open(history_file, 'w') as f:
+			history = json.dumps({url: today}, indent=4)
 			f.write(history)
 		return False
 
 def save(datestamp, ticker, url):
-	today = datetime.datetime.now()
-	with open(f'{os.path.realpath(__file__)}{os.sep}{today}.txt', 'a') as f:
-		f.write(f'{datestamp} {ticker} {url}')
+	today = datetime.datetime.now().strftime('%Y-%m-%d')
+	with open(f'{THIS_DIR}{today}.txt', 'a') as f:
+		f.write(f'{datestamp} {ticker} {url}\n')
 
 def get_html(url):
 	r = requests.get(url)
@@ -50,12 +52,17 @@ def main(url, search):
 				if headline != None:
 					headlineText = headline.find('span').text.strip()
 					if search.upper() in headlineText.upper():
+						print(' Matching article found:')
+						print(f'   "{headlineText}"')
+
 						datestamp, timestamp = row['data-datenews'].split()
 						article_url = headline.find('a', class_='newsTitleLink')['href']
 						ticker = row.find('span', class_='ticker').next_element
-						print(headlineText)
-						if not in_history(url):
-							save(datestamp, ticker, url)
+						if not in_history(article_url):
+							print(' Novel article, saving to file')
+							save(datestamp, ticker, article_url)
+						else:
+							print(' Article encountered before, ignoring')
 
 	else:
 		print(f' [!] Error 01: unable to read data from {url}')
