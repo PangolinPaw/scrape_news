@@ -1,4 +1,4 @@
-# scrape_news.py
+# scrape.py
 ## purpose
 Search the front page of https://thefly.com/news.php for articles containing the specified phrase. If the matching article(s) have not been encountered before, save details to a text file named after today's date.
 
@@ -10,6 +10,8 @@ Pyton dependencies:
 Geckodriver binary (Mac OSX):
 
 `/geckodriver-install.sh`
+
+**Important:** Make sure the path to the geckodriver binary is in your PATH environment variables or save the binary in the same directory as the _scrape_ python script.
 
 ## usage
  Usage:
