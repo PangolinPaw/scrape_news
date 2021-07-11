@@ -3,8 +3,13 @@
 Search the front page of https://thefly.com/news.php for articles containing the specified phrase. If the matching article(s) have not been encountered before, save details to a text file named after today's date.
 
 ## installation
+Pyton dependencies:
 
 `pip install -r requirements.txt`
+
+Geckodriver binary (Mac OSX):
+
+`/geckodriver-install.sh`
 
 ## usage
  Usage:
